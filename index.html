@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casa Inteligente · achadinhos de automação no WhatsApp</title>
+<meta name="description" content="Lâmpadas e tomadas Wi-Fi, assistentes de voz, câmeras, fechaduras e sensores do Mercado Livre e da Shopee no seu WhatsApp. Grátis, sem spam e você sai quando quiser.">
+<meta name="theme-color" content="#0F0D0C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://casainteligente.descontosvipdiario.com.br/">
+<meta property="og:title" content="Casa Inteligente · a casa que obedece">
+<meta property="og:description" content="Achadinhos de automação residencial no seu WhatsApp. No grupo, você vê primeiro.">
+
+<script>
+/* ===== CONFIGURAÇÃO: só mexer aqui ===== */
+window.CONFIG = {
+  linkGrupo: "COLAR_LINK_DO_GRUPO", /* convite do grupo de WhatsApp (https://chat.whatsapp.com/...) */
+  instagram: "dicasdepromodiario",
+  pixelMeta: "1696029998437124", /* pixel da Meta; deixe "" para desligar */
+  contadorURL: "https://descontosvipdiario.goatcounter.com/count" /* contador gratuito (GoatCounter, sem cookie); deixe "" para desligar */
+};
+(function () {
+  var q = location.search;
+  if (/[?&]ir=1(&|$)/.test(q)) document.documentElement.className += " indo";
+  /* só mede no domínio de verdade: prévias e testes locais não sujam o contador nem o pixel */
+  window.AO_VIVO = /^https:$/.test(location.protocol) && /(^|\.)descontosvipdiario\.com\.br$/.test(location.hostname);
+  if (!window.AO_VIVO || !window.CONFIG.pixelMeta) return;
+  !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = "2.0"; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s) }(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+  fbq("init", window.CONFIG.pixelMeta);
+  fbq("track", "PageView");
+})();
+/* começa com a luz apagada (só quando o JS roda; sem JS a página já vem acesa) */
+document.documentElement.className += " apagada";
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --noite:#0F0D0C; --parede:#1B1714; --linha:#3A322B; --texto-cor:#F5ECE1; --suave:#BFB3A6;
+  --ambar:#FFB547; --vela:#FFD89A; --brasa:#FF8A3D; --verde:#3DDC84; --branco:#FFFFFF;
+  --display:Sora, system-ui, sans-serif; --texto:Inter, system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:clip;background:var(--noite);color:var(--texto-cor);font-family:var(--texto);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding-inline:20px}
+svg{flex:none}
+[hidden]{display:none !important}
+
+/* Letreiro */
+.letreiro{background:#171310;color:var(--vela);border-bottom:1px solid var(--linha);overflow:hidden;padding:11px 0;font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.letreiro .trilho{display:flex;width:max-content;animation:marquee 26s linear infinite}
+.letreiro span{padding-right:36px;white-space:nowrap}
+
+/* Topo */
+.topo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:18px}
+.marca{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.01em;text-decoration:none}
+.marca small{display:block;font-family:var(--texto);font-weight:500;font-size:12px;color:var(--suave);letter-spacing:0}
+.marca-icone{width:38px;height:38px;border-radius:12px;background:var(--parede);border:1px solid var(--linha);display:flex;align-items:center;justify-content:center}
+.insta{font-size:14px;font-weight:500;text-decoration:none;border:1px solid var(--linha);border-radius:999px;padding:8px 14px;color:var(--suave)}
+.insta:hover{color:var(--texto-cor);border-color:var(--suave)}
+
+/* Hero com interruptor */
+.hero{position:relative;padding-top:28px;padding-bottom:64px}
+.hero::before{content:"";position:absolute;top:-80px;bottom:0;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;background:radial-gradient(60% 55% at 70% 18%,rgba(255,181,71,.30),transparent 70%);transition:opacity 1.2s ease}
+.apagada .hero::before{opacity:0}
+.hero-grade{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:40px}
+.hero-texto{flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:20px}
+.selo{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;background:var(--parede);border:1px solid var(--linha);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--suave)}
+.ponto{width:9px;height:9px;border-radius:50%;background:var(--verde);animation:pisca 1.2s ease-in-out infinite}
+h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(40px,7vw,78px);line-height:1;letter-spacing:-.035em}
+h1 .luz{color:var(--ambar);text-shadow:0 0 28px rgba(255,181,71,.55);transition:color 1s ease,text-shadow 1s ease}
+.apagada h1 .luz{color:#9C8F82;text-shadow:none}
+.lead{margin:0;font-size:19px;line-height:1.5;max-width:540px;color:var(--suave)}
+.lead strong{color:var(--texto-cor)}
+.garantias{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;font-weight:500;color:var(--suave)}
+.cta-bloco{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+
+/* Botão principal */
+.cta{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:12px;background:var(--ambar);color:#1A1208;text-decoration:none;font-family:var(--display);font-weight:800;font-size:21px;padding:20px 30px;border-radius:999px;min-height:44px;box-shadow:0 10px 40px -10px rgba(255,181,71,.7);animation:pulsa 2.4s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.cta:hover{background:var(--vela)}
+.cta:focus-visible,.interruptor:focus-visible,.barra a:focus-visible{outline:3px solid var(--branco);outline-offset:4px}
+.cta::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:brilho 3.2s ease-in-out infinite}
+.cta.grande{font-size:23px;padding:22px 36px}
+
+/* Interruptor */
+.int-area{flex:0 1 320px;min-width:0;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:18px}
+.pendente{position:relative;width:120px;height:140px}
+.pendente .fio{position:absolute;left:59px;top:0;width:2px;height:70px;background:var(--linha)}
+.pendente svg{position:absolute;left:20px;top:62px;transform-origin:40px 0;animation:balanca 3.5s ease-in-out infinite}
+.lampada-vidro{fill:var(--vela);transition:fill .6s ease}
+.apagada .lampada-vidro{fill:#3A322B}
+.halo{transition:opacity .8s ease}
+.apagada .halo{opacity:0}
+.interruptor{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:inherit;-webkit-tap-highlight-color:transparent}
+.placa{width:112px;height:168px;border-radius:22px;background:linear-gradient(160deg,#2A241F,#191512);border:1px solid #463C33;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 40px -16px #000;display:flex;align-items:center;justify-content:center}
+.tecla{width:58px;height:104px;border-radius:14px;background:#0C0A09;border:1px solid #463C33;position:relative;overflow:hidden}
+.tecla::before{content:"";position:absolute;left:6px;right:6px;top:6px;height:44px;border-radius:10px;background:linear-gradient(#F3E8DA,#C8BAAA);box-shadow:0 4px 10px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.tecla::after{content:"";position:absolute;left:50%;bottom:12px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#3A322B;transition:background .3s ease,box-shadow .3s ease}
+.interruptor[aria-checked="true"] .tecla::before{transform:translateY(46px)}
+.interruptor[aria-checked="true"] .tecla::after{background:var(--ambar);box-shadow:0 0 10px var(--ambar)}
+.int-rotulo{font-family:var(--display);font-weight:600;font-size:15px;color:var(--vela);min-height:22px;text-align:center}
+.apagada .int-rotulo{animation:chama 1.6s ease-in-out infinite}
+
+/* Casa que acende */
+.casa-sec{border-top:1px solid var(--linha);padding:64px 0 24px}
+.cabeca{display:flex;flex-direction:column;gap:12px;max-width:640px;margin-bottom:28px}
+.rotulo{color:var(--ambar);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+h2{margin:0;font-family:var(--display);font-weight:800;line-height:1.05;letter-spacing:-.03em;font-size:clamp(30px,5vw,50px)}
+.cabeca p{margin:0;font-size:17px;line-height:1.5;color:var(--suave)}
+.casa-grade{display:grid;grid-template-columns:1fr;gap:8px}
+.casa-fixa{position:sticky;top:8px;z-index:1;background:linear-gradient(var(--noite) 85%,transparent);padding:8px 0 18px}
+.casa{display:block;width:100%;max-width:420px;height:auto;margin:0 auto}
+.casa .estrutura{fill:none;stroke:#4A4038;stroke-width:3;stroke-linejoin:round}
+.casa .chao{fill:var(--parede)}
+.casa .movel{fill:none;stroke:#5A4E44;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .8s ease}
+.casa .acende{opacity:0;transition:opacity .9s ease}
+.casa .teto{fill:#3A322B;transition:fill .6s ease}
+.casa .comodo.on .acende{opacity:1}
+.casa .comodo.on .teto{fill:var(--vela)}
+.casa .comodo.on .movel{stroke:#C99A5B}
+.casa .nome{font:600 9px var(--texto);fill:#8C7F72;letter-spacing:.06em;text-transform:uppercase;transition:fill .6s ease}
+.casa .comodo.on .nome{fill:#3D2A10}
+.casa .janela-sotao{fill:#2A241F;transition:fill .9s ease}
+.casa.inteira .janela-sotao{fill:var(--ambar)}
+.passos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.passo{min-height:52vh;display:flex;align-items:center;padding:12px 0}
+.passo-card{background:var(--parede);border:1px solid var(--linha);border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:6px;transition:border-color .5s ease,box-shadow .5s ease,transform .5s ease;transform:translateY(10px);width:100%}
+.passo.on .passo-card{border-color:rgba(255,181,71,.55);box-shadow:0 0 0 1px rgba(255,181,71,.2),0 18px 50px -24px rgba(255,181,71,.6);transform:none}
+.passo .hora{font:700 12px var(--texto);letter-spacing:.08em;text-transform:uppercase;color:var(--ambar)}
+.passo strong{font-family:var(--display);font-size:22px;line-height:1.2}
+.passo span{font-size:16px;line-height:1.5;color:var(--suave)}
+
+/* Notificações */
+.noti-sec{padding:56px 0 64px}
+.noti-sec .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:40px}
+.noti-texto{flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.noti-texto p{margin:0;font-size:17px;line-height:1.5;color:var(--suave);max-width:460px}
+.celular-area{flex:0 1 340px;min-width:0;margin:0 auto;width:100%}
+.celular{background:#050404;border:1px solid #2E2722;border-radius:44px;padding:11px;box-shadow:0 30px 80px -30px rgba(255,138,61,.45)}
+.tela{border-radius:34px;overflow:hidden;height:540px;display:flex;flex-direction:column;background:radial-gradient(120% 70% at 50% 0%,#3B2614,#120E0B 70%);padding:18px 12px;gap:10px}
+.relogio{text-align:center;font-family:var(--display);font-weight:600;color:#F5ECE1;font-size:56px;letter-spacing:-.02em;line-height:1;margin:14px 0 4px}
+.data{text-align:center;font-size:13px;color:var(--suave);margin-bottom:12px}
+.noti{display:flex;gap:10px;align-items:flex-start;background:rgba(43,36,31,.82);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:11px 12px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.noti-sec.rodando .noti{animation:chega 12s cubic-bezier(.2,1,.3,1) infinite both}
+.noti:nth-of-type(2){animation-delay:1.2s}.noti:nth-of-type(3){animation-delay:2.4s}.noti:nth-of-type(4){animation-delay:3.6s}.noti:nth-of-type(5){animation-delay:4.8s}
+.app{width:34px;height:34px;border-radius:9px;background:var(--ambar);display:flex;align-items:center;justify-content:center;flex:none}
+.noti-corpo{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.noti-topo{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--suave)}
+.noti-corpo strong{font-size:14px}
+.noti-corpo .loja{font-size:12.5px;color:#D8CCBE}
+.tela-aviso{text-align:center;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8C7F72;margin-top:auto}
+
+/* Regras */
+.regras{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding-bottom:24px}
+.regra{background:var(--parede);border:1px solid var(--linha);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.regra strong{font-family:var(--display);font-size:20px}
+.regra span{font-size:15px;line-height:1.5;color:var(--suave)}
+
+/* Fechamento */
+.final{padding-top:56px;padding-bottom:80px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+.final h2{font-size:clamp(32px,5.5vw,58px);max-width:820px}
+.final h2 .luz{color:var(--ambar)}
+.final p{margin:0;font-size:16px;max-width:520px;color:var(--suave)}
+
+/* Barra fixa */
+.barra{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(15,13,12,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--linha);display:flex;justify-content:center;transition:transform .3s ease}
+.barra a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:480px;background:var(--ambar);color:#1A1208;text-decoration:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:17px;min-height:44px}
+.barra.escondida{transform:translateY(110%)}
+
+/* Rodapé: espaço extra embaixo para a barra fixa nunca cobrir o aviso */
+footer{background:#0A0908;border-top:1px solid var(--linha);color:#B3A79A;padding:32px 0 calc(96px + env(safe-area-inset-bottom));font-size:13px;line-height:1.6}
+footer .wrap{display:flex;flex-direction:column;gap:12px}
+footer p{margin:0}
+footer strong{color:var(--texto-cor)}
+footer a{color:var(--ambar)}
+
+/* Overlay de redirecionamento */
+.abrindo{position:fixed;inset:0;z-index:20;background:rgba(10,9,8,.94);color:var(--branco);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;font-family:var(--display)}
+.abrindo strong{font-size:26px}
+.abrindo a,.abrindo button{font-family:var(--texto);color:var(--ambar);font-size:16px;background:none;border:0;text-decoration:underline;cursor:pointer;min-height:44px}
+.girando{width:44px;height:44px;border-radius:50%;border:5px solid rgba(255,255,255,.15);border-top-color:var(--ambar);animation:gira .8s linear infinite}
+
+/* Modo teste (?debug=1) */
+.debug{position:fixed;left:8px;right:8px;bottom:80px;z-index:30;max-height:40vh;overflow:auto;background:#111;color:#3DDC84;font:12px/1.4 ui-monospace,monospace;padding:10px;border-radius:10px;white-space:pre-wrap}
+
+/* Leitores de tela */
+.so-leitor{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pulsa{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes brilho{0%{left:-60%}55%,100%{left:130%}}
+@keyframes pisca{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes chama{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes balanca{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes chega{0%{opacity:0;transform:translateY(-22px) scale(.96)}5%{opacity:1;transform:none}84%{opacity:1;transform:none}92%,100%{opacity:0;transform:translateX(40px)}}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+@media (min-width:900px){
+  .casa-grade{grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .casa-fixa{top:calc(50vh - 190px);background:none;padding:0}
+  .passo{min-height:60vh}
+}
+@media (max-width:520px){
+  .cta{font-size:18px;padding:18px 22px}
+  .cta.grande{font-size:19px;padding:20px 24px}
+  .casa{max-width:300px}
+  .passo{min-height:46vh}
+  .tela{height:500px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms !important}
+  .letreiro .trilho,.cta,.cta::after,.ponto,.pendente svg,.int-rotulo,.girando{animation:none !important}
+  .noti-sec.rodando .noti,.noti{animation:none !important;opacity:1}
+  .passo-card{transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="letreiro" aria-hidden="true">
+  <div class="trilho">
+    <span>A casa que obedece</span><span>✦</span><span>Lâmpadas e tomadas Wi-Fi</span><span>✦</span><span>Câmeras, fechaduras e sensores</span><span>✦</span><span>Mercado Livre e Shopee</span><span>✦</span><span>Grátis, sem spam</span><span>✦</span>
+    <span>A casa que obedece</span><span>✦</span><span>Lâmpadas e tomadas Wi-Fi</span><span>✦</span><span>Câmeras, fechaduras e sensores</span><span>✦</span><span>Mercado Livre e Shopee</span><span>✦</span><span>Grátis, sem spam</span><span>✦</span>
+  </div>
+</div>
+
+<header class="wrap topo">
+  <div class="marca">
+    <span class="marca-icone" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB547" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 14a3 3 0 0 1 4 0"/><path d="M8.5 12a6 6 0 0 1 7 0"/><circle cx="12" cy="16.5" r=".8" fill="#FFB547"/></svg></span>
+    <span>Casa Inteligente<small>por Descontos VIP Diário</small></span>
+  </div>
+  <a class="insta" href="https://www.instagram.com/dicasdepromodiario/" target="_blank" rel="noopener">@dicasdepromodiario</a>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="hero-grade">
+      <div class="hero-texto">
+        <div class="selo"><span class="ponto"></span>Grupo de achadinhos no WhatsApp</div>
+        <h1>A casa que <span class="luz">obedece</span> custa menos do que parece.</h1>
+        <p class="lead">O Jota garimpa lâmpadas e tomadas Wi-Fi, assistentes de voz, câmeras, fechaduras e sensores no Mercado Livre e na Shopee. <strong>No grupo, você vê primeiro.</strong></p>
+        <div class="cta-bloco">
+          <a class="cta" data-entrar="hero" href="#entrar">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+            Entrar no grupo grátis
+          </a>
+          <div class="garantias"><span>✓ Grátis</span><span>✓ Sem spam</span><span>✓ Sai quando quiser</span></div>
+        </div>
+      </div>
+
+      <div class="int-area">
+        <div class="pendente" aria-hidden="true">
+          <span class="fio"></span>
+          <svg width="80" height="76" viewBox="0 0 80 76" overflow="visible"><defs><radialGradient id="halo"><stop offset="0" stop-color="#FFB547" stop-opacity=".75"/><stop offset="1" stop-color="#FFB547" stop-opacity="0"/></radialGradient></defs><circle class="halo" cx="40" cy="44" r="46" fill="url(#halo)"/><path d="M28 0h24v10l14 22H14l14-22z" fill="#2A241F" stroke="#463C33" stroke-width="2"/><circle class="lampada-vidro" cx="40" cy="44" r="16"/></svg>
+        </div>
+        <button type="button" class="interruptor" id="interruptor" role="switch" aria-checked="false">
+          <span class="placa" aria-hidden="true"><span class="tecla"></span></span>
+          <span class="int-rotulo" id="int-rotulo">Toque para acender</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="casa-sec" aria-labelledby="t-casa">
+    <div class="wrap">
+      <div class="cabeca">
+        <span class="rotulo">Uma noite na casa que obedece</span>
+        <h2 id="t-casa">Rola a página e vê a casa acender, cômodo por cômodo.</h2>
+        <p>Nada de obra nem fio novo: a maioria desses aparelhos entra no lugar do que você já tem e funciona pelo Wi-Fi.</p>
+      </div>
+      <div class="casa-grade">
+        <div class="casa-fixa">
+          <svg class="casa" id="casa" viewBox="0 0 320 262" role="img" aria-label="Desenho de uma casa com quatro cômodos que acendem conforme você rola a página">
+            <defs>
+              <radialGradient id="luz" cx="50%" cy="10%" r="95%"><stop offset="0" stop-color="#FFE3B0"/><stop offset=".55" stop-color="#FFB547"/><stop offset="1" stop-color="#E07A2E"/></radialGradient>
+            </defs>
+            <path class="chao" d="M40 108h240v138H40z"/>
+            <!-- Quarto (em cima, esquerda) -->
+            <g class="comodo" data-comodo="quarto">
+              <rect class="acende" x="41" y="109" width="118" height="67" fill="url(#luz)"/>
+              <rect class="teto" x="94" y="111" width="12" height="4" rx="2"/>
+              <path class="movel" d="M56 166v-12h52v12M56 158h52M60 154v-8h16v8"/>
+              <text class="nome" x="128" y="168" text-anchor="middle">Quarto</text>
+            </g>
+            <!-- Escritório (em cima, direita) -->
+            <g class="comodo" data-comodo="escritorio">
+              <rect class="acende" x="161" y="109" width="118" height="67" fill="url(#luz)"/>
+              <rect class="teto" x="214" y="111" width="12" height="4" rx="2"/>
+              <path class="movel" d="M176 150h48M182 150v16M218 150v16M188 146v-14h24v14M200 146v4"/>
+              <text class="nome" x="240" y="168" text-anchor="middle">Escritório</text>
+            </g>
+            <!-- Sala (embaixo, esquerda) -->
+            <g class="comodo" data-comodo="sala">
+              <rect class="acende" x="41" y="178" width="118" height="67" fill="url(#luz)"/>
+              <rect class="teto" x="94" y="180" width="12" height="4" rx="2"/>
+              <path class="movel" d="M52 236v-14a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v14M52 230h48M60 218v-6h32v6M118 236v-28M112 208h12"/>
+              <text class="nome" x="136" y="200" text-anchor="middle">Sala</text>
+            </g>
+            <!-- Entrada (embaixo, direita) -->
+            <g class="comodo" data-comodo="entrada">
+              <rect class="acende" x="161" y="178" width="118" height="67" fill="url(#luz)"/>
+              <rect class="teto" x="214" y="180" width="12" height="4" rx="2"/>
+              <path class="movel" d="M236 244v-50h26v50M256 220v4M176 196h14v8h-14zM190 200h4"/>
+              <text class="nome" x="196" y="232" text-anchor="middle">Entrada</text>
+            </g>
+            <path class="estrutura" d="M24 112L160 22l136 90M40 104v142h240V104M160 108v138M40 177h240M18 247h284"/>
+            <rect class="janela-sotao" x="146" y="66" width="28" height="22" rx="4"/>
+          </svg>
+        </div>
+        <ol class="passos" id="passos">
+          <li class="passo" data-comodo="entrada"><div class="passo-card"><span class="hora">19h · Entrada</span><strong>Câmera e fechadura avisam que você chegou.</strong><span>Você vê no celular quem está no portão e abre a porta sem procurar a chave.</span></div></li>
+          <li class="passo" data-comodo="sala"><div class="passo-card"><span class="hora">19h05 · Sala</span><strong>A lâmpada Wi-Fi já acendeu sozinha.</strong><span>Rotina no horário do pôr do sol, luz quente para a noite e nada de levantar do sofá.</span></div></li>
+          <li class="passo" data-comodo="escritorio"><div class="passo-card"><span class="hora">21h · Escritório</span><strong>A tomada inteligente desliga o que ficou ligado.</strong><span>Carregador, ventilador ou cafeteira: desliga pelo app, no horário ou quando o sensor não vê ninguém.</span></div></li>
+          <li class="passo" data-comodo="quarto"><div class="passo-card"><span class="hora">23h · Quarto</span><strong>"Boa noite" e o assistente de voz apaga tudo.</strong><span>Uma frase só, e a casa inteira fica no escuro. Menos conta de luz, mais preguiça boa.</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="noti-sec" id="noti-sec" aria-labelledby="t-noti">
+    <div class="wrap">
+      <div class="noti-texto">
+        <span class="rotulo">Assim chega no seu celular</span>
+        <h2 id="t-noti">O achado aparece. Você decide se compra.</h2>
+        <p>O Jota posta o aparelho, a loja e o link. A compra é direto no Mercado Livre ou na Shopee, como você já faz. Sem cadastro, sem nome, sem CPF.</p>
+        <div class="cta-bloco"><a class="cta" data-entrar="notificacoes" href="#entrar">Quero receber os de hoje</a></div>
+      </div>
+      <div class="celular-area" aria-hidden="true">
+        <div class="celular">
+          <div class="tela">
+            <div class="relogio">19:05</div>
+            <div class="data">exemplo do formato</div>
+            <div class="noti"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><div class="noti-corpo"><div class="noti-topo"><span>Casa Inteligente</span><span>agora</span></div><strong>💡 Lâmpada Wi-Fi RGB</strong><span class="loja">Mercado Livre · preço e link no grupo</span></div></div>
+            <div class="noti"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><div class="noti-corpo"><div class="noti-topo"><span>Casa Inteligente</span><span>agora</span></div><strong>🔌 Tomada inteligente 10A</strong><span class="loja">Shopee · preço e link no grupo</span></div></div>
+            <div class="noti"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><div class="noti-corpo"><div class="noti-topo"><span>Casa Inteligente</span><span>1 min</span></div><strong>📷 Câmera Wi-Fi 360°</strong><span class="loja">Mercado Livre · preço e link no grupo</span></div></div>
+            <div class="noti"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><div class="noti-corpo"><div class="noti-topo"><span>Casa Inteligente</span><span>3 min</span></div><strong>🔒 Fechadura digital</strong><span class="loja">Shopee · preço e link no grupo</span></div></div>
+            <div class="noti"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span><div class="noti-corpo"><div class="noti-topo"><span>Casa Inteligente</span><span>5 min</span></div><strong>📡 Sensor de presença</strong><span class="loja">Mercado Livre · preço e link no grupo</span></div></div>
+            <div class="tela-aviso">ilustração · os achados reais estão no grupo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap regras" aria-label="Como funciona o grupo">
+    <div class="regra"><strong>Só o Jota posta</strong><span>Nada de corrente, figurinha ou conversa paralela. Só achado de casa inteligente.</span></div>
+    <div class="regra"><strong>Link direto da loja</strong><span>Você compra no Mercado Livre ou na Shopee, com a garantia e a entrega de lá.</span></div>
+    <div class="regra"><strong>Cansou? Sai</strong><span>Sem avisar ninguém e sem ninguém te adicionar de volta.</span></div>
+  </section>
+
+  <section class="wrap final" id="entrar">
+    <h2>Começa pela lâmpada. Quando vê, a casa toda <span class="luz">obedece.</span></h2>
+    <p>Ao tocar, o WhatsApp mostra o grupo antes. Você só confirma se quiser.</p>
+    <a class="cta grande" data-entrar="final" href="#entrar">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1208" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+      Entrar no grupo grátis
+    </a>
+  </section>
+</main>
+
+<div class="barra" id="barra">
+  <a data-entrar="barra" href="#entrar"><span class="ponto" aria-hidden="true"></span>Entrar no grupo grátis</a>
+</div>
+
+<footer id="rodape">
+  <div class="wrap">
+    <p><strong>Casa Inteligente</strong> é um nicho da Descontos VIP Diário, a curadoria de ofertas do Jota (<a href="https://www.instagram.com/dicasdepromodiario/" target="_blank" rel="noopener">@dicasdepromodiario</a>). Não somos o Mercado Livre nem a Shopee: as compras são feitas direto nas lojas, e alguns links podem render comissão ao Jota, sem custo extra para você. Preço e estoque mudam rápido, confira na loja antes de comprar.</p>
+    <p>Não fabricamos nem vendemos os aparelhos, e não temos vínculo com as marcas citadas nas ofertas; os nomes e logos pertencem aos seus donos. Antes de comprar, confira na loja se o aparelho é compatível com o seu Wi-Fi e com o seu assistente de voz.</p>
+    <p>Privacidade: esta página não pede nome nem telefone. Ela conta, sem identificar ninguém, de onde veio a visita e os toques no botão. O pixel da Meta mede os anúncios desta página. Dentro do grupo, valem as regras de privacidade do WhatsApp.</p>
+  </div>
+</footer>
+
+<div class="abrindo" id="abrindo" hidden role="status">
+  <div class="girando" aria-hidden="true"></div>
+  <strong id="abrindo-titulo">Abrindo o grupo no WhatsApp…</strong>
+  <a href="#" id="abrindo-link">Se não abrir, toque aqui</a>
+  <button type="button" id="abrindo-fechar" hidden>Voltar para a página</button>
+</div>
+
+<script>
+(function () {
+  var C = window.CONFIG, q = new URLSearchParams(location.search);
+  var aoVivo = window.AO_VIVO;
+  var debug = q.get("debug") === "1";
+  var PREFIXO = "/casainteligente/";
+  var linkPronto = /^https:\/\//.test(C.linkGrupo);
+  var abrindo = document.getElementById("abrindo");
+  var raiz = document.documentElement;
+  var poucoMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("abrindo-link").href = linkPronto ? C.linkGrupo : "#entrar";
+
+  function limpa(s) {
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+  }
+  function peloReferrer() {
+    var h = "";
+    try { h = new URL(document.referrer).hostname.replace(/^www\./, ""); } catch (e) { return ""; }
+    if (!h || h === location.hostname) return "";
+    var mapa = [[/instagram\./, "instagram"], [/facebook\.|^fb\./, "facebook"], [/tiktok\./, "tiktok"], [/whatsapp\./, "whatsapp"], [/google\./, "google"], [/youtube\./, "youtube"], [/^t\.co$|^x\.com$|twitter\./, "x"], [/linktr\.ee/, "linktree"]];
+    for (var i = 0; i < mapa.length; i++) if (mapa[i][0].test(h)) return mapa[i][1] + "-sem-tag";
+    return "site-" + h;
+  }
+
+  /* origem: ?origem= (ou utm_source); sem isso, tenta adivinhar pelo site anterior */
+  var origem = limpa(q.get("origem") || q.get("utm_source"));
+  var categoria = limpa(q.get("categoria") || q.get("utm_content"));
+  try {
+    if (!origem) origem = sessionStorage.getItem("ci_origem") || "";
+    if (!categoria) categoria = sessionStorage.getItem("ci_categoria") || "";
+  } catch (e) {}
+  if (!origem) origem = limpa(peloReferrer()) || "direto";
+  try { sessionStorage.setItem("ci_origem", origem); if (categoria) sessionStorage.setItem("ci_categoria", categoria); } catch (e) {}
+
+  var painel = null;
+  function mostra(d, situacao) {
+    if (!painel) { painel = document.createElement("div"); painel.className = "debug"; document.body.appendChild(painel); }
+    painel.textContent = situacao + "\n" + JSON.stringify(d) + "\n\n" + painel.textContent;
+  }
+
+  /* contador: cada visita e cada toque vira uma linha no painel do GoatCounter, tudo dentro de /casainteligente/ */
+  var NOMES = { "instagram-bio": "bio do Instagram", stories: "Stories", status: "Status do WhatsApp", impresso: "QR impresso", direto: "direto (link sem origem)" };
+  var CATS = { lampadas: "Lâmpadas", tomadas: "Tomadas", assistentes: "Assistentes de voz", cameras: "Câmeras", fechaduras: "Fechaduras", sensores: "Sensores" };
+  function conta(caminho, titulo, evento) {
+    caminho = PREFIXO + caminho;
+    var u = C.contadorURL + "?p=" + encodeURIComponent(caminho) + "&t=" + encodeURIComponent("Casa Inteligente · " + titulo) + "&e=" + (evento ? "true" : "false") +
+      "&s=" + encodeURIComponent([screen.width, screen.height, window.devicePixelRatio || 1].join(",")) + "&rnd=" + Math.random().toString(36).slice(2, 8);
+    if (!evento && document.referrer && document.referrer.indexOf(location.origin) !== 0) u += "&r=" + encodeURIComponent(document.referrer);
+    var foi = false;
+    try { foi = navigator.sendBeacon(u); } catch (e) {}
+    if (!foi) { try { new Image().src = u; } catch (e) {} }
+    return caminho;
+  }
+  function registra(evento, extra) {
+    var d = {
+      evento: evento, origem: origem, categoria: categoria || "",
+      botao: (extra && extra.botao) || "",
+      tela: window.matchMedia("(min-width: 900px)").matches ? "computador" : "celular",
+      quando: new Date().toISOString(), pagina: location.pathname
+    };
+    var enviar = aoVivo && C.contadorURL, linhas = [];
+    if (enviar) {
+      var o = NOMES[origem] || origem;
+      if (evento === "visita") linhas.push(conta("visita/" + origem, "Visita vinda de: " + o, false));
+      if (evento === "clique") {
+        linhas.push(conta("clique/" + origem, "Toque em entrar no grupo, vindo de: " + o, true));
+        linhas.push(conta("clique-botao/" + d.botao, "Toque em entrar no grupo, botão: " + d.botao, true));
+        if (categoria) linhas.push(conta("clique-categoria/" + categoria, "Toque em entrar no grupo, categoria: " + (CATS[categoria] || categoria), true));
+      }
+      if (evento === "acendeu") linhas.push(conta("interruptor", "Tocou no interruptor e acendeu a página", true));
+    }
+    if (evento === "clique" && window.fbq) { try { fbq("track", "Lead", { content_name: "grupo-whatsapp-casainteligente", origem: origem, categoria: categoria, botao: d.botao }); } catch (e) {} }
+    if (evento === "acendeu" && window.fbq) { try { fbq("trackCustom", "Interruptor", { origem: origem }); } catch (e) {} }
+    if (debug) mostra(d, enviar ? "enviado ao contador: " + linhas.join(", ") : "teste: não enviado");
+  }
+
+  /* overlay: abre o grupo ou, enquanto o link não existe, avisa que está chegando */
+  var fechar = document.getElementById("abrindo-fechar");
+  function abreGrupo(substituir) {
+    abrindo.hidden = false;
+    if (!linkPronto) {
+      document.getElementById("abrindo-titulo").textContent = "O grupo abre em breve. Volte daqui a pouco!";
+      document.getElementById("abrindo-link").hidden = true;
+      abrindo.querySelector(".girando").hidden = true;
+      fechar.hidden = false; fechar.focus();
+      return;
+    }
+    setTimeout(function () { substituir ? location.replace(C.linkGrupo) : (location.href = C.linkGrupo); }, substituir ? 400 : 350);
+  }
+  fechar.addEventListener("click", function () { abrindo.hidden = true; });
+
+  /* botões de entrada: registra, mostra o aviso e abre o grupo */
+  var links = document.querySelectorAll("[data-entrar]");
+  for (var i = 0; i < links.length; i++) {
+    (function (a) {
+      if (linkPronto) a.href = C.linkGrupo;
+      a.rel = "noopener";
+      a.addEventListener("click", function (ev) {
+        registra("clique", { botao: a.getAttribute("data-entrar") });
+        if (linkPronto && (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button === 1)) return;
+        ev.preventDefault();
+        abreGrupo(false);
+      });
+    })(links[i]);
+  }
+  window.addEventListener("pageshow", function () { if (linkPronto) abrindo.hidden = true; });
+
+  /* vindo do QR (?ir=1): conta o clique e abre o grupo */
+  if (q.get("ir") === "1") {
+    registra("clique", { botao: "qr" });
+    abreGrupo(true);
+    if (linkPronto) return;
+  } else {
+    registra("visita");
+  }
+
+  /* interruptor: liga a página */
+  var bt = document.getElementById("interruptor"), rot = document.getElementById("int-rotulo"), contou = false;
+  function liga(ligar, peloToque) {
+    raiz.classList.toggle("apagada", !ligar);
+    bt.setAttribute("aria-checked", ligar ? "true" : "false");
+    rot.textContent = ligar ? "Acesa! Agora rola pra ver a casa" : "Toque para acender";
+    if (ligar && peloToque && !contou) { contou = true; registra("acendeu"); }
+  }
+  bt.addEventListener("click", function () { liga(bt.getAttribute("aria-checked") !== "true", true); });
+
+  /* casa: acende cômodo por cômodo conforme os passos passam pelo meio da tela */
+  var casa = document.getElementById("casa");
+  var passos = document.querySelectorAll(".passo");
+  function acendeAte(n) {
+    for (var k = 0; k < passos.length; k++) {
+      var c = casa.querySelector('[data-comodo="' + passos[k].getAttribute("data-comodo") + '"]');
+      c.classList.toggle("on", k <= n);
+      passos[k].classList.toggle("on", k === n);
+    }
+    casa.classList.toggle("inteira", n >= passos.length - 1);
+    if (n >= 0 && raiz.classList.contains("apagada")) liga(true, false); /* quem rolou sem tocar não fica no escuro */
+  }
+  var obsCasa = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) acendeAte(Array.prototype.indexOf.call(passos, e.target));
+      else if (e.target === passos[0] && e.boundingClientRect.top > 0) acendeAte(-1);
+    });
+  }, { rootMargin: "-45% 0px -45% 0px" }) : null;
+  if (obsCasa) for (var p = 0; p < passos.length; p++) obsCasa.observe(passos[p]);
+  else acendeAte(passos.length - 1);
+
+  /* notificações: só começam a chegar quando o celular aparece na tela */
+  var notiSec = document.getElementById("noti-sec");
+  if (!poucoMovimento && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) {
+      notiSec.classList.toggle("rodando", es[0].isIntersecting);
+    }, { threshold: 0.25 }).observe(notiSec);
+  }
+
+  /* barra fixa: some quando o botão final ou o rodapé estão na tela */
+  var barra = document.getElementById("barra");
+  var alvos = [document.getElementById("entrar"), document.getElementById("rodape")];
+  var visiveis = {};
+  if ("IntersectionObserver" in window && barra) {
+    var obsBarra = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { visiveis[e.target.id] = e.isIntersecting; });
+      barra.classList.toggle("escondida", !!(visiveis.entrar || visiveis.rodape));
+    }, { threshold: 0.15 });
+    alvos.forEach(function (el) { if (el) obsBarra.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
